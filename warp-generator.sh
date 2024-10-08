@@ -24,12 +24,12 @@ peer_endpoint=$(echo "$peer_endpoint" | sed 's/\(.*\):[0-9]*/162.159.193.5/')
 
 cat <<EOL > WARP.conf
 [Interface]
-PrivateKey = kIlQqJ6WcZ9vkhdnhhRf8GyZOjmBuYbODkmtBpwJhnY=
-Address = 172.16.0.2/32, 2606:4700:110:816b:13c6:b486:4761:1122
+PrivateKey = ${priv}
+Address = ${client_ipv4}, ${client_ipv6}
 DNS = 1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001
 
 [Peer]
-PublicKey = bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=
+PublicKey = ${peer_pub}
 AllowedIPs = 0.0.0.0/0, ::/0
 Endpoint = 162.159.193.5:2408
 EOL
