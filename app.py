@@ -5,10 +5,10 @@ class CustomHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/download":
             self.send_response(200)
-            self.send_header('Content-type', 'text/html')
+            self.send_header('Content-type', 'text/html; charset=utf-8')
             self.end_headers()
             # Отправляем HTML-код с ссылкой на скачивание
-            self.wfile.write(b'<html><body><a href="/WARP.conf">Скачать WARP.conf</a></body></html>')
+            self.wfile.write('<html><body><a href="/WARP.conf">Скачать WARP.conf</a></body></html>'.encode('utf-8'))
         else:
             super().do_GET()
 
