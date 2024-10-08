@@ -28,7 +28,6 @@ conf=$(cat <<-EOM
 PrivateKey = ${priv}
 Address = ${client_ipv4}, ${client_ipv6}
 DNS = 1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001
-...
 [Peer]
 PublicKey = ${peer_pub}
 AllowedIPs = 0.0.0.0/0, ::/0
@@ -36,10 +35,14 @@ Endpoint = ${peer_endpoint}:${port}
 EOM
 )
 
-# ВЫВОД КОНФИГА НА ЭКРАН
+# Показываем конфигурацию
+echo "Вот конфигурация WARP.conf:"
 echo "${conf}"
 
-# Кодирование и создание ссылки для скачивания
+# Кодируем конфигурацию в Base64
 conf_base64=$(echo -n "${conf}" | base64 -w 0)
-echo "Скачать конфиг файлом: https://immalware.github.io/downloader.html?filename=WARP.conf&content=${conf_base64}"
+echo "Конфигурация в Base64:"
+echo "${conf_base64}"
 
+# Выводим ссылку
+echo "Скачать конфиг файлом: https://immalware.github.io/downloader.html?filename=WARP.conf&content=${conf_base64}"
