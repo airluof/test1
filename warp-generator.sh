@@ -44,5 +44,8 @@ conf_base64=$(echo -n "${conf}" | base64 -w 0)
 echo "Конфигурация в Base64:"
 echo "${conf_base64}"
 
+# Сообщение о запуске сервиса
+echo "Your Service is live!"
+
 # Выводим ссылку
 echo "Скачать конфиг файлом: https://immalware.github.io/downloader.html?filename=WARP.conf&content=${conf_base64}"
