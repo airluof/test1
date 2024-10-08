@@ -1,11 +1,29 @@
-import os
-from http.server import SimpleHTTPRequestHandler
-import socketserver
+from flask import Flask
+import subprocess
+import logging
 
-PORT = int(os.getenv("PORT", 8080))  # Использует переменную среды PORT или 8080 по умолчанию
+app = Flask(__name__)
 
-Handler = SimpleHTTPRequestHandler
+# Настройка логирования
+logging.basicConfig(level=logging.DEBUG)
 
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
-    print(f"Serving at port {PORT}")
-    httpd.serve_forever()
+@app.route('/')
+def home():
+    logging.debug("Запрос получен на /")
+    
+    # Запуск скрипта warp-generator.sh
+    result = subprocess.run(['bash', 'warp-generator.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    # Проверка на ошибки
+    if result.returncode != 0:
+        logging.error("Скрипт завершился с ошибкой: %d", result.returncode)
+        logging.error("Ошибка: %s", result.stderr.decode('utf-8'))
+        return "Ошибка при выполнении скрипта."
+    
+    output = result.stdout.decode('utf-8')
+    logging.debug("Вывод из скрипта: %s", output)
+    
+    return output  # Возвращает вывод скрипта
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000)
