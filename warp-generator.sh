@@ -27,7 +27,7 @@ conf=$(cat <<-EOM
 [Interface]
 PrivateKey = ${priv}
 Address = ${client_ipv4}, ${client_ipv6}
-DNS = 1.1.1.1
+DNS = 1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001
 ...
 [Peer]
 PublicKey = ${peer_pub}
