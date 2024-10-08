@@ -1,14 +1,21 @@
-# Используйте официальный образ Ubuntu в качестве базового
-FROM ubuntu:latest
+# Указываем базовый образ Python
+FROM python:3.9-slim
 
-# Установите необходимые пакеты
-RUN apt-get update && apt-get install -y wireguard-tools curl jq
+# Устанавливаем необходимые зависимости (если есть requirements.txt)
+# Копируем файл зависимостей и устанавливаем их
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Скопируйте ваш скрипт в контейнер
-COPY warp-generator.sh /usr/local/bin/warp-generator.sh
+# Копируем исходный код приложения в контейнер
+COPY . /app
+WORKDIR /app
 
-# Сделайте скрипт исполняемым
-RUN chmod +x /usr/local/bin/warp-generator.sh
+# Указываем переменную среды PORT (необязательно, Render автоматически задаст её)
+ENV PORT 8080
 
-# Укажите команду, которая будет выполняться при запуске контейнера
-CMD ["bash", "/usr/local/bin/warp-generator.sh"]
+# Пример кода, который будет запущен
+# CMD команда должна быть настроена на запуск твоего приложения
+CMD ["python", "app.py"]
+
+# Указываем, что контейнер должен слушать на порту $PORT
+EXPOSE 8080
