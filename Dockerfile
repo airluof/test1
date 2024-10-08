@@ -19,3 +19,6 @@ CMD ["python", "app.py"]
 
 # Указываем, что контейнер должен слушать на порту $PORT
 EXPOSE 8080
+
+RUN pip install -r requirements.txt
+
