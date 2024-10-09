@@ -1,24 +1,17 @@
-import os
-from http.server import SimpleHTTPRequestHandler
+import http.server
 import socketserver
+import os
 
-PORT = int(os.getenv("PORT", 8080))  # Использует переменную среды PORT или 8080 по умолчанию
+PORT = int(os.environ.get("PORT", 8080))
 
-class CustomHandler(SimpleHTTPRequestHandler):
+class MyHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == '/':
-            # Отправляем HTML с ссылкой на скачивание файла WARP.conf
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html; charset=utf-8')
-            self.end_headers()
-            self.wfile.write('<html><body><a href="/WARP.conf">Скачать WARP.conf</a></body></html>'.encode('utf-8'))
-        else:
-            # Обрабатываем остальные запросы как обычные файлы
-            super().do_GET()
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html; charset=utf-8')
+        self.end_headers()
+        self.wfile.write('<html><body><a href="/WARP.conf">Скачать WARP.conf</a></body></html>'.encode('utf-8'))
 
-# Создание TCP-сервера
-Handler = CustomHandler
-
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
-    print(f"Serving at port {PORT}")
+# Создаем сервер
+with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
+    print(f"Сервер запущен на порту {PORT}")
     httpd.serve_forever()
