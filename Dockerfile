@@ -10,7 +10,7 @@ COPY . /app
 WORKDIR /app
 
 # Копируем скрипт генерации WARP.conf в рабочую директорию
-COPY warp_generator.sh /app/warp_generator.sh
+COPY warp_generator.sh /app/warp-generator.sh
 
 # Устанавливаем права на выполнение скрипта
 RUN chmod +x /app/warp-generator.sh
