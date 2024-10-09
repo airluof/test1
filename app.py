@@ -11,7 +11,7 @@ class CustomHandler(SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/html; charset=utf-8')
             self.end_headers()
-            self.wfile.write(b'<html><body><a href="/WARP.conf">Скачать WARP.conf</a></body></html>')
+            self.wfile.write('<html><body><a href="/WARP.conf">Скачать WARP.conf</a></body></html>'.encode('utf-8'))
         else:
             # Обрабатываем остальные запросы как обычные файлы
             super().do_GET()
