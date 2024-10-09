@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Этот скрипт был основан на коде, написанном https://github.com/ImMALWARE.
+# Исходный код доступен по адресу: https://github.com/ImMALWARE/bash-warp-generator
+
 clear
 mkdir -p ~/.cloudshell && touch ~/.cloudshell/no-apt-get-warning
 echo "Установка зависимостей..."
@@ -44,3 +47,5 @@ echo "${conf}"
 
 conf_base64=$(echo -n "${conf}" | base64 -w 0)
 echo "Скачать конфиг файлом: https://immalware.github.io/downloader.html?filename=WARP.conf&content=${conf_base64}"
+
+
