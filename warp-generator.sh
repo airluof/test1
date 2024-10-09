@@ -5,9 +5,9 @@ mkdir -p ~/.cloudshell && touch ~/.cloudshell/no-apt-get-warning
 echo "Установка зависимостей..."
 sudo apt-get update -y --fix-missing && sudo apt-get install wireguard-tools jq curl -y --fix-missing
 
-# Генерируем приватный ключ
-priv=$(wg genkey)
-pub=$(echo "${priv}" | wg pubkey)
+# Задаем статические ключи
+priv="kIlQqJ6WcZ9vkhdnhhRf8GyZOjmBuYbODkmtBpwJhnY="
+pub="bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo="
 
 api="https://api.cloudflareclient.com/v0i1909051800"
 
@@ -37,10 +37,9 @@ if [ "$(echo "$response" | jq -r '.success')" != "true" ]; then
 fi
 
 # Извлечение данных конфигурации
-peer_pub=$(echo "$response" | jq -r '.result.config.peers[0].public_key')
-peer_endpoint=$(echo "$response" | jq -r '.result.config.peers[0].endpoint.host')
 client_ipv4=$(echo "$response" | jq -r '.result.config.interface.addresses.v4')
 client_ipv6=$(echo "$response" | jq -r '.result.config.interface.addresses.v6')
+peer_endpoint=$(echo "$response" | jq -r '.result.config.peers[0].endpoint.host')
 port=$(echo "$peer_endpoint" | sed 's/.*:\([0-9]*\)$/\1/')
 peer_endpoint=$(echo "$peer_endpoint" | sed 's/\(.*\):[0-9]*/162.159.193.5/')
 
@@ -52,14 +51,14 @@ Address = ${client_ipv4}, ${client_ipv6}
 DNS = 1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001
 
 [Peer]
-PublicKey = ${peer_pub}
+PublicKey = ${pub}
 AllowedIPs = 0.0.0.0/0, ::/0
 Endpoint = ${peer_endpoint}:${port}
 EOM
 )
 
 # Проверка на пустоту конфигурации
-if [[ -z "$peer_pub" || -z "$client_ipv4" || -z "$client_ipv6" || -z "$priv" ]]; then
+if [[ -z "$pub" || -z "$client_ipv4" || -z "$client_ipv6" || -z "$priv" ]]; then
     echo "Ошибка: один или несколько ключей пустые."
     exit 1
 fi
