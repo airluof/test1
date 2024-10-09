@@ -5,24 +5,22 @@ mkdir -p ~/.cloudshell && touch ~/.cloudshell/no-apt-get-warning
 echo "Установка зависимостей..."
 sudo apt-get update -y --fix-missing && sudo apt-get install wireguard-tools -y --fix-missing
 
-# Генерация приватного и публичного ключей
+# Генерируем приватный и публичный ключи
 priv=$(wg genkey)
 pub=$(echo "${priv}" | wg pubkey)
 
-# Отладочный вывод для проверки ключей
-echo "Сгенерированный приватный ключ: ${priv}"
-echo "Сгенерированный публичный ключ: ${pub}"
-
 api="https://api.cloudflareclient.com/v0i1909051800"
 
+# Функции для работы с API
 ins() { curl -s -H 'user-agent:' -H 'content-type: application/json' -X "$1" "${api}/$2" "${@:3}"; }
 sec() { ins "$1" "$2" -H "authorization: Bearer $3" "${@:4}"; }
 
+# Регистрация клиента
 response=$(ins POST "reg" -d "{\"install_id\":\"\",\"tos\":\"$(date -u +%FT%T.000Z)\",\"key\":\"${pub}\",\"fcm_token\":\"\",\"type\":\"ios\",\"locale\":\"en_US\"}")
 
+# Извлечение необходимых данных из ответа
 id=$(echo "$response" | jq -r '.result.id')
 token=$(echo "$response" | jq -r '.result.token')
-
 response=$(sec PATCH "reg/${id}" "$token" -d '{"warp_enabled":true}')
 peer_pub=$(echo "$response" | jq -r '.result.config.peers[0].public_key')
 peer_endpoint=$(echo "$response" | jq -r '.result.config.peers[0].endpoint.host')
@@ -45,16 +43,12 @@ Endpoint = ${peer_endpoint}:${port}
 EOM
 )
 
-# Отладочный вывод для проверки конфигурации
-echo "Сформированная конфигурация:"
-echo "${conf}"
-
 clear
 echo -e "\n\n\n"
 [ -t 1 ] && echo "########## НАЧАЛО КОНФИГА ##########"
 echo "${conf}"
 [ -t 1 ] && echo "########### КОНЕЦ КОНФИГА ###########"
 
-# Кодирование конфигурации в base64
+# Кодировка конфигурации в base64
 conf_base64=$(echo -n "${conf}" | base64 -w 0)
 echo "Скачать конфиг файлом: https://immalware.github.io/downloader.html?filename=WARP.conf&content=${conf_base64}"
