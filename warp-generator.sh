@@ -9,6 +9,10 @@ sudo apt-get update -y --fix-missing && sudo apt-get install wireguard-tools -y 
 priv=$(wg genkey)
 pub=$(echo "${priv}" | wg pubkey)
 
+# Отладочный вывод для проверки ключей
+echo "Сгенерированный приватный ключ: ${priv}"
+echo "Сгенерированный публичный ключ: ${pub}"
+
 api="https://api.cloudflareclient.com/v0i1909051800"
 
 ins() { curl -s -H 'user-agent:' -H 'content-type: application/json' -X "$1" "${api}/$2" "${@:3}"; }
@@ -40,6 +44,10 @@ AllowedIPs = 0.0.0.0/0, ::/0
 Endpoint = ${peer_endpoint}:${port}
 EOM
 )
+
+# Отладочный вывод для проверки конфигурации
+echo "Сформированная конфигурация:"
+echo "${conf}"
 
 clear
 echo -e "\n\n\n"
