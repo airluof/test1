@@ -2,7 +2,6 @@
 FROM python:3.9-slim
 
 # Устанавливаем необходимые зависимости (если есть requirements.txt)
-# Копируем файл зависимостей и устанавливаем их
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -10,16 +9,20 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app
 WORKDIR /app
 
+# Копируем скрипт генерации WARP.conf в рабочую директорию
+COPY warp_generator.sh /app/warp_generator.sh
+
+# Устанавливаем права на выполнение скрипта
+RUN chmod +x /app/warp_generator.sh
+
+# Генерируем WARP.conf
+RUN /bin/bash /app/warp_generator.sh
+
 # Указываем переменную среды PORT (необязательно, Render автоматически задаст её)
 ENV PORT 8080
 
-# Пример кода, который будет запущен
-# CMD команда должна быть настроена на запуск твоего приложения
+# Запускаем приложение
 CMD ["python", "app.py"]
 
 # Указываем, что контейнер должен слушать на порту $PORT
 EXPOSE 8080
-
-RUN pip install -r requirements.txt
-RUN apt-get update && apt-get install -y coreutils
-
