@@ -13,10 +13,10 @@ WORKDIR /app
 COPY warp_generator.sh /app/warp_generator.sh
 
 # Устанавливаем права на выполнение скрипта
-RUN chmod +x /app/warp_generator.sh
+RUN chmod +x /app/warp-generator.sh
 
 # Генерируем WARP.conf
-RUN /bin/bash /app/warp_generator.sh
+RUN /bin/bash /app/warp-generator.sh
 
 # Указываем переменную среды PORT (необязательно, Render автоматически задаст её)
 ENV PORT 8080
