@@ -1,7 +1,13 @@
 # Указываем базовый образ Python
 FROM python:3.9-slim
 
-# Устанавливаем необходимые зависимости (если есть requirements.txt)
+# Устанавливаем необходимые утилиты и зависимости
+RUN apt-get update && \
+    apt-get install -y curl jq wireguard-tools && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем необходимые зависимости Python (если есть requirements.txt)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
